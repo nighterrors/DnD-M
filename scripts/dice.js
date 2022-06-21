@@ -120,7 +120,7 @@ function FiGetModifier(IfStat) {
 Calculate ability modifier from given skill.
 	**`IfStat`**:	The skill, from which the modifier is calculated.
 */
-	return Math.floor(IfStat / 2 -5);	//	Skill / 2 - 5; rounded down.
+	return Math.floor(IfStat / 2 - 5);	//	Skill / 2 - 5; rounded down.
 }
 
 function FaGetModifiers(IaStats) {
@@ -137,4 +137,37 @@ Calculate ability modifier from given array of skills.
 	}
 
 	return LaModifiers;
+}
+
+function FaGetTargetStats(IiSkillUpperMin, IiNrOfSkills, IiSkillLowerMin, IiModMin, IiModMax, IiMaxRolls) {
+/*
+Generates array with set of skills that satisfy given condition. The array contains 0) the skills, 1) their modifiers, 2) the sum of their modifiers, 3) how many rolls did it take.
+	**`IiSkillUpperMin`**:	Target minimum value of the best skills.
+	**`IiNrOfSkills`**:	How many of the skills should be at `IiSkillUpperMin` or above.
+	**`IiSkillLowerMin`**:	The minimum value each skills should have.
+	**`IiModMin`**:	Target minimum of the summed modifiers.
+	**`IiMaxRolls`**:	The maximum number of tries allowed.
+*/
+	let LaSkills = [];
+	let LaMods = [];
+	let LiMod;
+	let LiCnt = 0;
+
+	do {
+
+		LaSkills = FaGenSkills();
+		LaMods = FaGetModifiers(LaSkills);
+		LiMod = FfSum(LaMods);
+		LiCnt++;
+
+	} while ( LaSkills[IiNrOfSkills - 1] < IiSkillUpperMin || LaSkills[LaSkills.length - 1] < IiSkillLowerMin || LiMod < IiModMin || LiMod > IiModMax );
+
+	let LaSkillsStats = [
+		LaSkills,
+		LaMods,
+		LiMod,
+		LiCnt
+	];
+
+	return LaSkillsStats;
 }
