@@ -152,6 +152,7 @@ Generates array with set of skills that satisfy given condition. The array conta
 	let LaMods = [];
 	let LiMod;
 	let LiCnt = 0;
+	let LaSkillsStats = [];
 
 	do {
 
@@ -160,14 +161,19 @@ Generates array with set of skills that satisfy given condition. The array conta
 		LiMod = FfSum(LaMods);
 		LiCnt++;
 
-	} while ( LaSkills[IiNrOfSkills - 1] < IiSkillUpperMin || LaSkills[LaSkills.length - 1] < IiSkillLowerMin || LiMod < IiModMin || LiMod > IiModMax );
+		if ( (LaSkillsStats[2] == undefined) || (LiMod >= LaSkillsStats[2]) ) {
+			LaSkillsStats = [
+				LaSkills,
+				LaMods,
+				LiMod,
+				LiCnt
+			];
+		}
 
-	let LaSkillsStats = [
-		LaSkills,
-		LaMods,
-		LiMod,
-		LiCnt
-	];
+	} while (( LaSkills[IiNrOfSkills - 1] < IiSkillUpperMin || LaSkills[LaSkills.length - 1] < IiSkillLowerMin || LiMod < IiModMin || LiMod > IiModMax ) && LiCnt < IiMaxRolls );
 
 	return LaSkillsStats;
 }
+
+FaGenTargetStats(18,2,10,10,24,5);
+FaGenTargetStats(3,1,3,-24,24,5);
