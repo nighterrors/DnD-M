@@ -13,7 +13,13 @@ function FiGenDieRoll(IiSides) {
 Generates a random number between **1** and **`IiSides`** inclusive.
 	**`IiSides`**:	*Should be integer!* The upper bound for random number generation.
 */
-	return Math.floor(Math.random() * (IiSides) + 1);
+	let LiRoll = Math.ceil( Math.random() * (IiSides) );	//Generate rnd nr.
+
+	if ( LiRoll === 0 ) {	//Check the edge case, when it's 0 and should be outside of codomain.
+		LiRoll = FiGenDieRoll(IiSides)
+	}
+	
+	return LiRoll
 }
 
 function FaGenDiceRolls(IiNumber,IiSides) {
