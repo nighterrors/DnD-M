@@ -13,7 +13,13 @@ function FiGenDieRoll(IiSides) {
 Generates a random number between **1** and **`IiSides`** inclusive.
 	**`IiSides`**:	*Should be integer!* The upper bound for random number generation.
 */
-	return Math.floor(Math.random() * (IiSides) + 1);
+	let LiRoll = Math.ceil( Math.random() * (IiSides) );	//Generate rnd nr.
+
+	if ( LiRoll === 0 ) {	//Check the edge case, when it's 0 and should be outside of codomain.
+		LiRoll = FiGenDieRoll(IiSides)
+	}
+	
+	return LiRoll
 }
 
 function FaGenDiceRolls(IiNumber,IiSides) {
@@ -32,14 +38,14 @@ Generates an array of random numbers between **1** and **`IiSides`** inclusive.
 function FaDis_Advantage(IaDiceRolls, IbKeep, IiAmount, IbBig) {
 /*
 Applies (dis)advantage on an array of dice rolls:
-	**`IaDiceRolls`**:	The array contianing dice rolls. - Don't have to be ordered, but should contain integers.
+	**`IaDiceRolls`**:	The array containing dice rolls. - Don't have to be ordered, but should contain integers.
 	**`IbKeep`**:	Boolean.
 		If true, the number of dice rolls provided by IiAmount will be kept;
 		Otherwise this amount will be dropped from the array.
 	**`IiAmount`**:	The number of dice rolls that will be kept or dropped based on IbKeep.
 	**`IbBig`**:	Boolean.
 		If true, the function targets the bigger element in the sorted array;
-		Otherwse it targets the smaller element in the sorted array.
+		Otherwise it targets the smaller element in the sorted array.
 **Examples**:
 	-	For advantage IaDiceRolls should contain the result of 2 d20 rolls, IiAmount should be 1 and both IbKeep and `IbBig` should be the same (either true or false).
 	-	For disadvantage IaDiceRolls should contain the result of 2 d20 dice, IiAmount should be 1 and IbKeep and `IbBig` should be different (either true and false or false and true).
@@ -74,7 +80,7 @@ Applies (dis)advantage on an array of dice rolls:
 
 function FfSum(IaArrayToSum) {
 /*
-Sums the elements of an array. The array shoud contain numbers.
+Sums the elements of an array. The array should contain numbers.
 	**`IaArrayToSum`**:	The array, which's elements are summed.
 */
 	return IaArrayToSum.reduce(
@@ -96,7 +102,7 @@ Generates an array of raw values, which can be assigned to the 6 skills.
 
 	for (let i = 0; i < CiNrOfSkills; i++) {
 
-		LaSkills.push(	//	Add dicerolls to the array.
+		LaSkills.push(	//	Add dice rolls to the array.
 			FfSum(
 				FaDis_Advantage(
 					FaGenDiceRolls(CiDieNr, CiDieSides),
