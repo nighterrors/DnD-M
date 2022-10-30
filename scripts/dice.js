@@ -89,6 +89,8 @@ Sums the elements of an array. The array should contain numbers.
 }
 
 	//Barter
+	//FIXME: Handle 0 and negative dice pools!
+	//TODO: Refactor
 
 function FfPricePaidByShop(IfMarketValue,IiShopDicePool,IiPlayerDicePool) {
 /*
@@ -99,25 +101,33 @@ Calculates a haggled price for an item *sold to a shop*.
 	**Returns**:			*Float* The adjusted price the shopkeeper -currently being interacted with- would pay for the specific item.
 							(In the same currency that the original price was given as the 1st argument.)
 */
-	let LfPricePaidByShop = ( IfMarketValue * ( 111 - FfSum(FaGenDiceRolls(2,20)) - FfSum(FaGenDiceRolls(IiPlayerDicePool,10)) + FfSum(FaGenDiceRolls(IiShopDicePool,10)) ) / 100 );
+	let LiShopBaseModifier = FfSum(FaGenDiceRolls(IiShopDicePool,10));
+	let LiPlayerBaseModifier = FfSum(FaGenDiceRolls(IiPlayerDicePool,10));
+	let LfShopModifier = 75 * ( LiShopBaseModifier / ( 27.5 + LiShopBaseModifier ) );
+	let LfPlayerModifier = 75 * ( LiPlayerBaseModifier / ( 27.5 + LiPlayerBaseModifier ) );
+	let LfPricePaidByShop = ( IfMarketValue * ( 111 - FfSum(FaGenDiceRolls(2,20)) - LfShopModifier + LfPlayerModifier ) / 100 ).toFixed(2);
 
 	return LfPricePaidByShop;
 }
 
 function FfPricePaidByPlayer(IfMarketValue,IiShopDicePool,IiPlayerDicePool) {
-	/*
-	Calculates a haggled price for an item *bought from a shop*.
-		**`IfMarketValue`**:	*Should be float!* What's listed in the rule book.
-		**`IiShopDicePool`**:	*Should be int!* The shopkeeper's haggling potential. - E.g.: their **Persuasion modifier**.
-		**`IiPlayerDicePool`**:	*Should be int!* The player's haggling potential. - E.g.: their **Persuasion modifier**.
-		**Returns**:			*Float* The adjusted price the shopkeeper -currently being interacted with- would pay for the specific item.
-								(In the same currency that the original price was given as the 1st argument.)
-	*/
-		let LfPricePaidByPlayer = ( IfMarketValue * ( 89 + FfSum(FaGenDiceRolls(2,20)) + FfSum(FaGenDiceRolls(IiPlayerDicePool,10)) - FfSum(FaGenDiceRolls(IiShopDicePool,10)) ) / 100 );
+/*
+Calculates a haggled price for an item *bought from a shop*.
+	**`IfMarketValue`**:	*Should be float!* What's listed in the rule book.
+	**`IiShopDicePool`**:	*Should be int!* The shopkeeper's haggling potential. - E.g.: their **Persuasion modifier**.
+	**`IiPlayerDicePool`**:	*Should be int!* The player's haggling potential. - E.g.: their **Persuasion modifier**.
+	**Returns**:			*Float* The adjusted price the shopkeeper -currently being interacted with- would pay for the specific item.
+							(In the same currency that the original price was given as the 1st argument.)
+*/
+	let LiShopBaseModifier = FfSum(FaGenDiceRolls(IiShopDicePool,10));
+	let LiPlayerBaseModifier = FfSum(FaGenDiceRolls(IiPlayerDicePool,10));
+	let LfShopModifier = 75 * ( LiShopBaseModifier / ( 27.5 + LiShopBaseModifier ) );
+	let LfPlayerModifier = 75 * ( LiPlayerBaseModifier / ( 27.5 + LiPlayerBaseModifier ) );
+	let LfPricePaidByPlayer = ( IfMarketValue * ( 89 + FfSum(FaGenDiceRolls(2,20)) + LfShopModifier - LfPlayerModifier ) / 100 ).toFixed(2);
+
+	return LfPricePaidByPlayer;
+}
 	
-		return LfPricePaidByPlayer;
-	}
-		
 function FaGenSkills() {
 /*
 Generates an array of raw values, which can be assigned to the 6 skills.
